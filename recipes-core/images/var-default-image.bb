@@ -20,6 +20,8 @@ IMAGE_FEATURES += " \
     tools-debug \
 "
 
+QT5_PKGS = "${@oe.utils.conditional('QT_PROVIDER', 'qt5', 'packagegroup-arago-tisdk-qte', '', d)}"
+
 DOCKER_PKGS	= "${@bb.utils.contains('DISTRO_FEATURES', 'virtualization', 'docker-ce python3-docker-compose', '', d)}"
 
 OPENCL = " \
@@ -46,6 +48,7 @@ IMAGE_INSTALL += "\
     libcamera \
     resize-rootfs \
     ${DOCKER_PKGS} \
+    ${QT5_PKGS} \
 "
 
 WIC_CREATE_EXTRA_ARGS += " --no-fstab-update"
