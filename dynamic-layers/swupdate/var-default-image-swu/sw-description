@@ -1,0 +1,51 @@
+software =
+{
+	version = "0.1.0";
+
+	am62x-var-som = {
+		hardware-compatibility: [ "1.0" ];
+
+		files: (
+			{
+				filename = "var-default-image-am62x-var-som.tar.zst";
+				type = "archive";
+				compressed = "zstd";
+				device = "/dev/update";
+				filesystem = "ext4";
+				preserve-attributes = true;
+				path = "/";
+			},
+			{
+				filename = "tiboot3.bin";
+				filesystem = "vfat";
+				device = "/dev/mmcblk0p1";
+				path = "tiboot3.bin";
+			},
+			{
+				filename = "tispl.bin";
+				filesystem = "vfat";
+				device = "/dev/mmcblk0p1";
+				path = "tispl.bin";
+			},
+			{
+				filename = "u-boot.img";
+				filesystem = "vfat";
+				device = "/dev/mmcblk0p1";
+				path = "u-boot.img";
+			},
+			{
+				filename = "uEnv.txt";
+				filesystem = "vfat";
+				device = "/dev/mmcblk0p1";
+				path = "uEnv.txt";
+			}
+		);
+
+		scripts: (
+			{
+				filename = "update.sh";
+				type = "shellscript";
+			}
+		);
+	};
+}
