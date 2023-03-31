@@ -33,7 +33,7 @@ IMAGE_INSTALL += "\
     packagegroup-arago-base-tisdk \
     ti-test \
     ${@['','packagegroup-arago-tisdk-opencl'][oe.utils.all_distro_features(d, 'opencl', True, False) and bb.utils.contains('MACHINE_FEATURES', 'dsp', True, False, d)]} \
-    packagegroup-arago-tisdk-connectivity \
+    packagegroup-var-connectivity \
     packagegroup-arago-tisdk-crypto \
     packagegroup-arago-tisdk-multimedia \
     packagegroup-arago-tisdk-amsdk \
