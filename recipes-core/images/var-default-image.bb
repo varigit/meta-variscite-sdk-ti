@@ -10,6 +10,8 @@ inherit core-image
 ###          to provide a way for users to reproduce the image used during
 ###          the validation process of Varsicite BSP releases
 
+IMAGE_FSTYPES:remove = "tar.xz.md5"
+
 IMAGE_FEATURES += " \
     splash \
     package-management \
