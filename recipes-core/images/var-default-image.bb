@@ -31,6 +31,13 @@ OPENCL = " \
     ${@bb.utils.contains('MACHINE_FEATURES','dsp','packagegroup-arago-tisdk-opencl-extra','',d)} \
 "
 
+SWUPDATE_PKGS = " \
+	swupdate \
+	swupdate-www \
+	kernel-image \
+	kernel-devicetree \
+"
+
 IMAGE_INSTALL += "\
     packagegroup-arago-base \
     packagegroup-arago-console \
@@ -51,6 +58,7 @@ IMAGE_INSTALL += "\
     resize-rootfs \
     ${DOCKER_PKGS} \
     ${QT5_PKGS} \
+    ${@bb.utils.contains("BBFILE_COLLECTIONS","swupdate", "${SWUPDATE_PKGS}",'',d)} \
 "
 
 WIC_CREATE_EXTRA_ARGS += " --no-fstab-update"
