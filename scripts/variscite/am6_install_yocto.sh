@@ -6,7 +6,7 @@ IMGS_PATH=/opt/images/Yocto
 ROOTFSPART=2
 PART=p
 ROOTFS_IMAGE=rootfs.tar.zst
-ROTTFS_START_SECTOR="276480"
+ROOTFS_START_SECTOR="276480"
 UBOOT_ENV_OFFSET_MB="134"
 
 check_board()
@@ -83,7 +83,7 @@ create_emmc_parts()
 
 	(
 	 echo n; echo p; echo 1; echo; echo +128M; \
-	 echo n; echo p; echo 2; echo ${ROTTFS_START_SECTOR}; echo; \
+	 echo n; echo p; echo 2; echo ${ROOTFS_START_SECTOR}; echo; \
 	 echo t; echo 1; echo c; echo a; echo 1; \
 	 echo p; echo w;
 	) | fdisk -u /dev/${EMMC_BLOCK} > /dev/null
@@ -101,7 +101,7 @@ create_emmc_swupdate_parts()
 	SECT_SIZE_BYTES=`cat /sys/block/${EMMC_BLOCK}/queue/hw_sector_size`
 
 	BOOTLOADER_RESERVED_SIZE_BYTES=$((BOOTLOADER_RESERVED_SIZE * 1024 * 1024))
-	ROOTFS1_PART_START=${ROTTFS_START_SECTOR}
+	ROOTFS1_PART_START=${ROOTFS_START_SECTOR}
 
 	DATA_SIZE_BYTES=$((DATA_SIZE * 1024 * 1024))
 	DATA_PART_SIZE=$((DATA_SIZE_BYTES / SECT_SIZE_BYTES))
