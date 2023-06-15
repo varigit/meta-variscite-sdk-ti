@@ -220,6 +220,8 @@ usage()
 	echo
 	echo " options:"
 	echo " -h                           show help message"
+	echo " -b                           only install the bootloader (U-Boot), and skip installing the rootfs"
+	echo "                              Warning: the storage will be reformatted"
 	echo " -u                           create two rootfs partitions (for swUpdate double-copy)."
 	echo
 }
@@ -244,8 +246,9 @@ blue_underlined_bold_echo "*** Variscite AM6 Yocto eMMC Recovery ***"
 echo
 
 swupdate=0
+bootloader_only=0
 
-while getopts d:hu OPTION;
+while getopts "bd:hu" OPTION;
 do
 	case $OPTION in
 	h)
@@ -254,6 +257,9 @@ do
 		;;
 	u)
 		swupdate=1
+		;;
+	b)
+		bootloader_only=1
 		;;
 	*)
 		usage
@@ -288,6 +294,8 @@ elif [[ $swupdate == 1 ]] ; then
 fi
 format_emmc_parts
 install_bootloader_to_emmc
-install_rootfs_to_emmc
+if [[ $bootloader_only == 0 ]] ; then
+	install_rootfs_to_emmc
+fi
 start_udev
 finish
