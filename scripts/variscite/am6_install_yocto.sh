@@ -100,7 +100,6 @@ create_emmc_swupdate_parts()
 	TOTAL_SECTORS=`cat /sys/block/${EMMC_BLOCK}/size`
 	SECT_SIZE_BYTES=`cat /sys/block/${EMMC_BLOCK}/queue/hw_sector_size`
 
-	BOOTLOADER_RESERVED_SIZE_BYTES=$((BOOTLOADER_RESERVED_SIZE * 1024 * 1024))
 	ROOTFS1_PART_START=${ROOTFS_START_SECTOR}
 
 	DATA_SIZE_BYTES=$((DATA_SIZE * 1024 * 1024))
