@@ -6,8 +6,10 @@ IMGS_PATH=/opt/images/Yocto
 ROOTFSPART=2
 PART=p
 ROOTFS_IMAGE=rootfs.tar.zst
-ROOTFS_START_SECTOR="276480"
-UBOOT_ENV_OFFSET_MB="134"
+BOOT_PART_SIZE_MB="40"
+UBOOT_ENV_START_MB=$((BOOT_PART_SIZE_MB + 3))
+ROOTFS_START_MB="$((BOOT_PART_SIZE_MB + 4))"
+ROOTFS_START_SECTOR=$((ROOTFS_START_MB * 1024 * 1024 / 512))
 
 check_board()
 {
@@ -69,7 +71,7 @@ delete_emmc()
 	dd if=/dev/zero of=/dev/${EMMC_BLOCK} bs=1M count=10
 
 	# Zero out environment
-	dd if=/dev/zero of=/dev/${EMMC_BLOCK} bs=1M count=1 seek=${UBOOT_ENV_OFFSET_MB} 2>/dev/null || true
+	dd if=/dev/zero of=/dev/${EMMC_BLOCK} bs=1M count=1 seek=${UBOOT_ENV_START_MB} 2>/dev/null || true
 
 	sync; sleep 1
 }
@@ -82,7 +84,7 @@ create_emmc_parts()
 	echo DISK SIZE - $SIZE bytes
 
 	(
-	 echo n; echo p; echo 1; echo; echo +128M; \
+	 echo n; echo p; echo 1; echo; echo +${BOOT_PART_SIZE_MB}M; \
 	 echo n; echo p; echo 2; echo ${ROOTFS_START_SECTOR}; echo; \
 	 echo t; echo 1; echo c; echo a; echo 1; \
 	 echo p; echo w;
@@ -119,7 +121,7 @@ create_emmc_swupdate_parts()
 	fi
 
 	(
-	 echo n; echo p; echo 1; echo; echo +128M; \
+	 echo n; echo p; echo 1; echo; echo +${BOOT_PART_SIZE_MB}M; \
 	 echo n; echo p; echo $ROOTFSPART;  echo $ROOTFS1_PART_START; echo $ROOTFS1_PART_END; \
 	 echo n; echo p; echo $ROOTFS2PART; echo $ROOTFS2_PART_START; echo $ROOTFS2_PART_END; \
 	 echo n; echo p; echo $DATAPART;    echo $DATA_PART_START; echo; \
