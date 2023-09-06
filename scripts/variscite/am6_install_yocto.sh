@@ -29,9 +29,11 @@ check_board()
 		BOARD=am62x-var-som
 		EMMC_BLOCK=mmcblk0
 		SD_BLOCK=mmcblk1
+		DEBIAN_IMAGES_TO_ROOTFS_POINT=""
 	elif uname -m | grep -qi "x86"; then
 		BOARD=x86
 		UPDATE_ENVTOOLS="no"
+		DEBIAN_IMAGES_TO_ROOTFS_POINT="opt/images/Yocto"
 		red_bold_echo "Warning: running from x86 machine. Make sure you know what you're doing to avoid data loss"
 		if [[ -z "${EMMC_BLOCK}" ]]; then
 			red_bold_echo "ERROR: EMMC_BLOCK is not set."
@@ -208,6 +210,20 @@ install_rootfs_to_emmc()
 
 	echo
 	sync
+
+	# copy debian images on the installed rootfs
+	if [ "$DEBIAN_IMAGES_TO_ROOTFS_POINT" != "" ]; then
+		mkdir -p ${MOUNTDIR}/${DEBIAN_IMAGES_TO_ROOTFS_POINT}/boot
+		blue_underlined_bold_echo "Copying Debian images to /${DEBIAN_IMAGES_TO_ROOTFS_POINT}"
+		cp ${IMGS_PATH}/${ROOTFS_IMAGE} ${MOUNTDIR}/${DEBIAN_IMAGES_TO_ROOTFS_POINT}/
+		cp ${IMGS_PATH}/boot/* ${MOUNTDIR}/${DEBIAN_IMAGES_TO_ROOTFS_POINT}/boot/
+
+		blue_underlined_bold_echo "Copying script to /${DEBIAN_IMAGES_TO_ROOTFS_POINT}"
+		install -m 0755 ${G_META_VARISCITE_SDK_SRC_DIR}/scripts/variscite/am6_install_yocto.sh \
+			${MOUNTDIR}/usr/sbin/install_debian.sh
+		install -m 0755 ${G_META_VARISCITE_SDK_SRC_DIR}/scripts/variscite/echos.sh \
+			${MOUNTDIR}/usr/sbin/
+	fi
 
 	umount ${MOUNTDIR}
 }
