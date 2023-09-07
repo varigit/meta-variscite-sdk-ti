@@ -1,10 +1,22 @@
 #!/bin/bash -e
 
-. /usr/bin/echos.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-IMGS_PATH=/opt/images/Yocto
+if [ -f "/usr/bin/echos.sh" ]; then
+	. /usr/bin/echos.sh
+elif [ -f "${SCRIPT_DIR}/echos.sh" ]; then
+	. ${SCRIPT_DIR}/echos.sh
+fi
+
+# Weakly initialize some variables if they are empty or undefined
+# allowing them to be overriden by the environment
+IMGS_PATH="${IMGS_PATH:=/opt/images/Yocto}"
+INSTALL_OS="${INSTALL_OS:=Yocto}"
+if [ -z "${PART+x}" ]; then
+    PART="p"
+fi
+UPDATE_ENVTOOLS="yes"
 ROOTFSPART=2
-PART=p
 ROOTFS_IMAGE=rootfs.tar.zst
 BOOT_PART_SIZE_MB="40"
 UBOOT_ENV_START_MB=$((BOOT_PART_SIZE_MB + 3))
@@ -13,10 +25,18 @@ ROOTFS_START_SECTOR=$((ROOTFS_START_MB * 1024 * 1024 / 512))
 
 check_board()
 {
-	if grep -q "AM62X" /sys/devices/soc0/family; then
+	if grep -q "AM62X" /sys/devices/soc0/family > /dev/null 2>&1; then
 		BOARD=am62x-var-som
 		EMMC_BLOCK=mmcblk0
 		SD_BLOCK=mmcblk1
+	elif uname -m | grep -qi "x86"; then
+		BOARD=x86
+		UPDATE_ENVTOOLS="no"
+		red_bold_echo "Warning: running from x86 machine. Make sure you know what you're doing to avoid data loss"
+		if [[ -z "${EMMC_BLOCK}" ]]; then
+			red_bold_echo "ERROR: EMMC_BLOCK is not set."
+			exit 1
+		fi
 	else
 		red_bold_echo "ERROR: Unsupported board"
 		exit 1
@@ -182,7 +202,7 @@ install_rootfs_to_emmc()
 	tar --warning=no-timestamp -xpf ${IMGS_PATH}/${ROOTFS_IMAGE} -C ${MOUNTDIR} --checkpoint=.1200
 
 	# Adjust u-boot-fw-utils for eMMC on the installed rootfs
-	if [ -f ${MOUNTDIR}/etc/fw_env.config ]; then
+	if [ -f "${MOUNTDIR}/etc/fw_env.config" ] && [ "$UPDATE_ENVTOOLS" = "yes" ]; then
 		sed -i "s/\/dev\/mmcblk./\/dev\/${EMMC_BLOCK}/" ${MOUNTDIR}/etc/fw_env.config
 	fi
 
@@ -230,8 +250,10 @@ usage()
 finish()
 {
 	echo
-	blue_bold_echo "Yocto installed successfully"
-	exit 0
+	blue_bold_echo "${INSTALL_OS} installed successfully"
+	if [[ "$0" = "$BASH_SOURCE" ]]; then
+		exit 0
+	fi
 }
 
 #################################################
