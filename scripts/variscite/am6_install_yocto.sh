@@ -8,10 +8,30 @@ elif [ -f "${SCRIPT_DIR}/echos.sh" ]; then
 	. ${SCRIPT_DIR}/echos.sh
 fi
 
-# Weakly initialize some variables if they are empty or undefined
-# allowing them to be overriden by the environment
-IMGS_PATH="${IMGS_PATH:=/opt/images/Yocto}"
+# Weakly initialize INSTALL_OS variable if it is empty or undefined
+# allowing it to be overriden by the environment
 INSTALL_OS="${INSTALL_OS:=Yocto}"
+
+detect_OS()
+{
+	# Detect OS when the script is running from Yocto/Debian target
+	#
+	# Weakly initialize IMGS_PATH variable if it is empty or undefined
+	# allowing it to be overriden by the environment
+	#
+	# In the case the script is running from x86 develop machine, nothing todo
+	# because it is sourced (e.g. by make_weston_sdcard_am6() function in the
+	# weston_rootfs.sh) and the INSTALL_OS variable is overriden
+	#
+	if grep -q 'PRETTY_NAME="Arago' /etc/os-release > /dev/null 2>&1; then
+		INSTALL_OS="Yocto"
+		IMGS_PATH="${IMGS_PATH:=/opt/images/Yocto}"
+	elif grep -q 'PRETTY_NAME="Debian' /etc/os-release > /dev/null 2>&1; then
+		INSTALL_OS="Debian"
+		IMGS_PATH="${IMGS_PATH:=/opt/images/Debian}"
+	fi
+}
+
 if [ -z "${PART+x}" ]; then
     PART="p"
 fi
@@ -25,15 +45,18 @@ ROOTFS_START_SECTOR=$((ROOTFS_START_MB * 1024 * 1024 / 512))
 
 check_board()
 {
+	DEBIAN_IMAGES_TO_ROOTFS_POINT=""
+
 	if grep -q "AM62X" /sys/devices/soc0/family > /dev/null 2>&1; then
 		BOARD=am62x-var-som
 		EMMC_BLOCK=mmcblk0
 		SD_BLOCK=mmcblk1
-		DEBIAN_IMAGES_TO_ROOTFS_POINT=""
 	elif uname -m | grep -qi "x86"; then
 		BOARD=x86
 		UPDATE_ENVTOOLS="no"
-		DEBIAN_IMAGES_TO_ROOTFS_POINT="opt/images/Yocto"
+		if [ "${INSTALL_OS}" = "Debian" ]; then
+			DEBIAN_IMAGES_TO_ROOTFS_POINT="/opt/images/Debian"
+		fi
 		red_bold_echo "Warning: running from x86 machine. Make sure you know what you're doing to avoid data loss"
 		if [[ -z "${EMMC_BLOCK}" ]]; then
 			red_bold_echo "ERROR: EMMC_BLOCK is not set."
@@ -43,7 +66,6 @@ check_board()
 		red_bold_echo "ERROR: Unsupported board"
 		exit 1
 	fi
-
 
 	if [[ ! -b /dev/${EMMC_BLOCK} ]] ; then
 		red_bold_echo "ERROR: Can't find eMMC device (/dev/${EMMC_BLOCK})."
@@ -311,6 +333,11 @@ check_board
 
 printf "Board: "
 blue_bold_echo $BOARD
+
+detect_OS
+
+printf "OS to install: "
+blue_bold_echo $INSTALL_OS
 
 printf "Installing to internal storage device: "
 blue_bold_echo eMMC
