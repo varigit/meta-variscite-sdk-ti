@@ -9,6 +9,10 @@ RDEPENDS_${PN} += "\
     wget \
 "
 
+RDEPENDS_${PN}:remove:am335x-var-som += "\
+    powervr-graphics \
+"
+
 # to save about 213 MB required by ltp-ddt package (without considering its dependencies)
 RDEPENDS_${PN}:remove = "\
     ltp-ddt \

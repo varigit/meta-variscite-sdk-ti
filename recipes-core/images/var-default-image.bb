@@ -60,6 +60,13 @@ IMAGE_INSTALL += "\
     ${@bb.utils.contains("BBFILE_COLLECTIONS","swupdate", "${SWUPDATE_PKGS}",'',d)} \
 "
 
+IMAGE_INSTALL:remove:am335x-var-som += "\
+    packagegroup-dl \
+    libcamera \
+    resize-rootfs \
+    ${SWUPDATE_PKGS} \
+"
+
 WIC_CREATE_EXTRA_ARGS += " --no-fstab-update"
 
 systemd_disable_vt () {
