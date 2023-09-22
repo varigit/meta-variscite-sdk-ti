@@ -6,6 +6,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 FILESEXTRAPATHS:prepend := "${THISDIR}/../../scripts/variscite:"
 
 INSTALL_SCRIPT ?= "am6_install_yocto.sh"
+INSTALL_SCRIPT:am335x-var-som ?= "am3_install_yocto.sh"
 
 RDEPENDS:${PN} = "bash zstd"
 
@@ -25,4 +26,4 @@ FILES:${PN} = "\
     ${bindir}/echos.sh \
 "
 
-COMPATIBLE_MACHINE = "(am62x-var-som)"
+COMPATIBLE_MACHINE = "(am62x-var-som|am335x-var-som)"

@@ -27,13 +27,28 @@ VAR_RECOVERY_IMAGES = "\
 	u-boot.img \
 	uEnv.txt \
 "
+
+VAR_RECOVERY_IMAGES:am335x-var-som = "\
+	MLO-nand \
+	u-boot.img-nand \
+	zImage \
+	var-som-am33.dtb \
+"
+
 # The file must then be renamed to follow the install_yocto.sh standard name.
 VAR_RECOVERY_IMAGE_SUBDIR[tiboot3.bin] = "boot"
 VAR_RECOVERY_IMAGE_SUBDIR[tispl.bin] = "boot"
 VAR_RECOVERY_IMAGE_SUBDIR[u-boot.img] = "boot"
 VAR_RECOVERY_IMAGE_SUBDIR[uEnv.txt] = "boot"
+VAR_RECOVERY_IMAGE_SUBDIR[MLO-nand] = "boot"
+VAR_RECOVERY_IMAGE_SUBDIR[u-boot.img-nand] = "boot"
+VAR_RECOVERY_IMAGE_SUBDIR[zImage] = "boot"
+VAR_RECOVERY_IMAGE_SUBDIR[var-som-am33.dtb] = "boot"
 
 # Use the var-recovery bbclass
 inherit var-recovery
 
-COMPATIBLE_MACHINE = "(am62x-var-som)"
+COMPATIBLE_MACHINE = "(am62x-var-som|am335x-var-som)"
+
+# Removing default ubi creation for this image
+IMAGE_FSTYPES:remove:am335x-var-som = "ubi"
