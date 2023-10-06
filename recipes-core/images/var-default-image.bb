@@ -4,7 +4,7 @@ machines including GUI, demos and lots of applications. This creates a very \
 large image, not suitable for production."
 LICENSE = "MIT"
 
-inherit core-image
+inherit core-image populate_sdk_qt5
 
 ### WARNING: This image is NOT suitable for production use and is intended
 ###          to provide a way for users to reproduce the image used during
