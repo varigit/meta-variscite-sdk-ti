@@ -1,3 +1,3 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-RMINITDIR_class-target_remove = "rm_sysvinit_initddir"
+RMINITDIR_class-target:remove = "rm_sysvinit_initddir"
