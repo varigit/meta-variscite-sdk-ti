@@ -39,20 +39,17 @@ SWUPDATE_PKGS = " \
 IMAGE_INSTALL += "\
     packagegroup-arago-base \
     packagegroup-arago-console \
-    packagegroup-arago-base-tisdk \
     ltp-ddt \
     ti-test \
     ${@['','packagegroup-arago-tisdk-opencl'][oe.utils.all_distro_features(d, 'opencl', True, False) and bb.utils.contains('MACHINE_FEATURES', 'dsp', True, False, d)]} \
     packagegroup-var-connectivity \
     packagegroup-arago-tisdk-crypto \
     packagegroup-arago-tisdk-multimedia \
-    packagegroup-arago-tisdk-amsdk \
     packagegroup-arago-tisdk-addons \
     ${@bb.utils.contains('DISTRO_FEATURES', 'wayland', "weston-init weston-examples", '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-analyze', '', d)} \
     zstd \
     ${@oe.utils.all_distro_features(d, "opencl", "${OPENCL}")} \
-    packagegroup-dl \
     libcamera \
     resize-rootfs \
     ${DOCKER_PKGS} \
