@@ -58,6 +58,7 @@ IMAGE_INSTALL += "\
     ${DOCKER_PKGS} \
     ${QT5_PKGS} \
     ${@bb.utils.contains("BBFILE_COLLECTIONS","swupdate", "${SWUPDATE_PKGS}",'',d)} \
+    f2fs-tools \
 "
 
 IMAGE_INSTALL:remove:am335x-var-som += "\
