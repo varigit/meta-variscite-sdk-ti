@@ -18,6 +18,9 @@ IMAGE_FEATURES += " \
     debug-tweaks \
     nfs-server \
     tools-debug \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'weston', \
+        bb.utils.contains('DISTRO_FEATURES', 'x11', 'x11-base x11-sato', \
+            '', d), d)} \
 "
 
 QT5_PKGS = "${@oe.utils.conditional('QT_PROVIDER', 'qt5', 'packagegroup-arago-tisdk-qte', '', d)}"
