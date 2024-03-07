@@ -61,5 +61,5 @@ if [ $1 == "postinst" ]; then
 
 	get_update_part
 
-	fw_setenv bootpart $UPDATE_PART
+	fw_setenv mmcpart $UPDATE_PART
 fi
