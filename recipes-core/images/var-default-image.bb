@@ -23,6 +23,7 @@ IMAGE_FEATURES += " \
             '', d), d)} \
 "
 
+QT_PROVIDER ?= "qt5"
 QT5_PKGS = "${@oe.utils.conditional('QT_PROVIDER', 'qt5', 'packagegroup-arago-tisdk-qte', '', d)}"
 
 DOCKER_PKGS	= "${@bb.utils.contains('DISTRO_FEATURES', 'virtualization', 'docker-ce python3-docker-compose', '', d)}"
