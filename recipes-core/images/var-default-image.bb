@@ -62,7 +62,7 @@ IMAGE_INSTALL += "\
     f2fs-tools \
 "
 
-IMAGE_INSTALL:remove:am335x-var-som += "\
+IMAGE_INSTALL:remove:am335x-var-som = "\
     packagegroup-dl \
     libcamera \
     resize-rootfs \
