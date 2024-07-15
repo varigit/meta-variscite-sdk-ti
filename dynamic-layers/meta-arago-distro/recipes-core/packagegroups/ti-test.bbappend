@@ -9,7 +9,7 @@ RDEPENDS_${PN} += "\
     wget \
 "
 
-RDEPENDS_${PN}:remove:am335x-var-som += "\
+RDEPENDS_${PN}:remove:am335x-var-som = "\
     powervr-graphics \
 "
 
