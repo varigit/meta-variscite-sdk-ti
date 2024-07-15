@@ -1,3 +1,3 @@
-ARAGO_EXTRA:remove += "\
+ARAGO_EXTRA:remove = "\
     dropbear \
 "
