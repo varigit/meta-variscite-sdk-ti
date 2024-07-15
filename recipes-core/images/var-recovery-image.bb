@@ -48,6 +48,11 @@ VAR_RECOVERY_IMAGE_SUBDIR[var-som-am33.dtb] = "boot"
 # Use the var-recovery bbclass
 inherit var-recovery
 
+# Install Android files
+IMAGE_INSTALL:append:am62x-var-som = " \
+	var-install-android \
+"
+
 COMPATIBLE_MACHINE = "(am62x-var-som|am335x-var-som)"
 
 # Removing default ubi creation for this image
