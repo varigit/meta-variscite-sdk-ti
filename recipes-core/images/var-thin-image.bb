@@ -4,7 +4,7 @@ LICENSE = "MIT"
 
 require var-default-image.bb
 
-IMAGE_INSTALL:remove += "\
+IMAGE_INSTALL:remove = "\
     ltp-ddt \
     packagegroup-arago-tisdk-multimedia \
     packagegroup-arago-tisdk-qte \
