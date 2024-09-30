@@ -1,6 +1,8 @@
 DESCRIPTION = "Example compound image for Variscite boards"
 SECTION = ""
 
+inherit image
+
 # Note: sw-description is mandatory
 SRC_URI = " \
 	file://sw-description \
