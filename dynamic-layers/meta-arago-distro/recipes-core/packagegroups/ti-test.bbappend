@@ -57,3 +57,8 @@ RDEPENDS:${PN} += "\
     which \
     tar \
 "
+
+# to add Cortex-M binaries in the image
+RDEPENDS:${PN} += "\
+    ti-mcu-plus-sdk \
+"
