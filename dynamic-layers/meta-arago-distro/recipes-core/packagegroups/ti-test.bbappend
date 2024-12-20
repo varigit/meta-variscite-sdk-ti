@@ -1,4 +1,4 @@
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     evtest \
     expect \
     minicom \
@@ -9,17 +9,17 @@ RDEPENDS_${PN} += "\
     wget \
 "
 
-RDEPENDS_${PN}:remove:am335x-var-som = "\
+RDEPENDS:${PN}:remove:am335x-var-som = "\
     powervr-graphics \
 "
 
 # to save about 213 MB required by ltp-ddt package (without considering its dependencies)
-RDEPENDS_${PN}:remove = "\
+RDEPENDS:${PN}:remove = "\
     ltp-ddt \
 "
 
 # to get utility dependencies introduced by ltp-ddt
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     acl \
     at \
     pm-qa \
@@ -28,7 +28,7 @@ RDEPENDS_${PN} += "\
 "
 
 # to get utility dependencies introduced by ltp (included in ltp-ddt)
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     attr \
     bash \
     bc \
