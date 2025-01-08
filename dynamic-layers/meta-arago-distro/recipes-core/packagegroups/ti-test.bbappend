@@ -62,3 +62,5 @@ RDEPENDS:${PN} += "\
 RDEPENDS:${PN} += "\
     ti-mcu-plus-sdk \
 "
+
+TI_TEST_TI_TOOLS:remove:k3 = "ti-rtos-firmware"
