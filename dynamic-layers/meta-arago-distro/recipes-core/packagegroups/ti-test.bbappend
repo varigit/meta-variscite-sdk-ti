@@ -59,7 +59,7 @@ RDEPENDS:${PN} += "\
 "
 
 # to add Cortex-M binaries in the image
-RDEPENDS:${PN} += "\
+RDEPENDS:am62x-var-som:${PN} += "\
     ti-mcu-plus-sdk \
 "
 
