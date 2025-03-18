@@ -51,6 +51,10 @@ check_board()
 		BOARD=am62x-var-som
 		EMMC_BLOCK=mmcblk0
 		SD_BLOCK=mmcblk1
+	elif grep -q "AM62PX" /sys/devices/soc0/family > /dev/null 2>&1; then
+		BOARD=am62px-var-som
+		EMMC_BLOCK=mmcblk0
+		SD_BLOCK=mmcblk1
 	elif uname -m | grep -qi "x86"; then
 		BOARD=x86
 		UPDATE_ENVTOOLS="no"
