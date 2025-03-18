@@ -26,4 +26,4 @@ FILES:${PN} = "\
     ${bindir}/echos.sh \
 "
 
-COMPATIBLE_MACHINE = "(am62x-var-som|am335x-var-som)"
+COMPATIBLE_MACHINE = "(am62x-var-som|am62px-var-som|am335x-var-som)"
