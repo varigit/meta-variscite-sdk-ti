@@ -53,7 +53,7 @@ IMAGE_INSTALL:append:am62x-var-som = " \
 	var-install-android \
 "
 
-COMPATIBLE_MACHINE = "(am62x-var-som|am335x-var-som)"
+COMPATIBLE_MACHINE = "(am62x-var-som|am62px-var-som|am335x-var-som)"
 
 # Removing default ubi creation for this image
 IMAGE_FSTYPES:remove:am335x-var-som = "ubi"
