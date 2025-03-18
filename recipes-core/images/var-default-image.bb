@@ -26,13 +26,6 @@ IMAGE_FEATURES += " \
 QT_PROVIDER ?= "qt5"
 QT5_PKGS = "${@oe.utils.conditional('QT_PROVIDER', 'qt5', 'packagegroup-arago-tisdk-qte', '', d)}"
 
-DOCKER_PKGS	= "${@bb.utils.contains('DISTRO_FEATURES', 'virtualization', 'docker-ce python3-docker-compose', '', d)}"
-
-OPENCL = " \
-    ${@bb.utils.contains('MACHINE_FEATURES','dsp','ti-opencl','',d)} \
-    ${@bb.utils.contains('MACHINE_FEATURES','dsp','packagegroup-arago-tisdk-opencl-extra','',d)} \
-"
-
 SWUPDATE_PKGS = " \
 	swupdate \
 	swupdate-www \
@@ -45,7 +38,6 @@ IMAGE_INSTALL += "\
     packagegroup-arago-console \
     ltp-ddt \
     ti-test \
-    ${@['','packagegroup-arago-tisdk-opencl'][oe.utils.all_distro_features(d, 'opencl', True, False) and bb.utils.contains('MACHINE_FEATURES', 'dsp', True, False, d)]} \
     packagegroup-var-connectivity \
     packagegroup-arago-tisdk-crypto \
     packagegroup-arago-tisdk-multimedia \
@@ -53,10 +45,8 @@ IMAGE_INSTALL += "\
     ${@bb.utils.contains('DISTRO_FEATURES', 'wayland', "weston-init weston-examples", '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-analyze', '', d)} \
     zstd \
-    ${@oe.utils.all_distro_features(d, "opencl", "${OPENCL}")} \
     libcamera \
     resize-rootfs \
-    ${DOCKER_PKGS} \
     ${QT5_PKGS} \
     ${@bb.utils.contains("BBFILE_COLLECTIONS","swupdate", "${SWUPDATE_PKGS}",'',d)} \
     f2fs-tools \
