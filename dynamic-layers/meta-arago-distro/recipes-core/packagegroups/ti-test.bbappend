@@ -5,7 +5,6 @@ RDEPENDS:${PN} += "\
     powervr-graphics \
     screen \
     spidev-test \
-    var-mii \
     wget \
 "
 
