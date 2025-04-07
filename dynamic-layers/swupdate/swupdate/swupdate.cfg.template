@@ -13,14 +13,13 @@ download :
 };
 
 identify : (
-	{ name = "board"; value = "am62x-var-som"; }
+	{ name = "board"; value = "@@MACHINE_NAME@@"; }
 );
 
 suricatta :
 {
 	tenant		= "default";
-	id		= "am62x-var-som";
-	confirm 	= 0;
+	id		= "@@MACHINE_NAME@@";
 	url 		= "http://varupdate:8080";
 	polldelay	= 3600;
 	nocheckcert	= true;

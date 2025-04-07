@@ -2,6 +2,11 @@
 # Automatically generated file; DO NOT EDIT.
 # SWUpdate Configuration
 #
+# This MUST NOT BE a savedef config. The swupdate
+# recipe parses this file and will select the dependencies
+# based on these configuration switches
+# Also remove CONFIG_EXTRA_CCFLAGS and CONFIG_EXTRA_LDFLAGS
+# so that the flags from the Yocto build will be used
 
 #
 # SWUpdate Settings
@@ -35,8 +40,6 @@ CONFIG_LUAPKG="lua"
 #
 CONFIG_CROSS_COMPILE=""
 CONFIG_SYSROOT=""
-CONFIG_EXTRA_CFLAGS=""
-CONFIG_EXTRA_LDFLAGS=""
 CONFIG_EXTRA_LDLIBS=""
 
 #
@@ -59,9 +62,11 @@ CONFIG_UBOOT=y
 CONFIG_UBOOT_FWENV="/etc/fw_env.config"
 CONFIG_UBOOT_DEFAULTENV="/etc/u-boot-initial-env"
 # CONFIG_BOOTLOADER_GRUB is not set
+# CONFIG_BOOTLOADER_CBOOT is not set
 CONFIG_BOOTLOADER_DEFAULT_UBOOT=y
-CONFIG_UPDATE_STATE_CHOICE_NONE=y
-# CONFIG_UPDATE_STATE_CHOICE_BOOTLOADER is not set
+# CONFIG_BOOTLOADER_STATIC_LINKED is not set
+CONFIG_UPDATE_STATE_CHOICE_BOOTLOADER=y
+CONFIG_UPDATE_STATE_BOOTLOADER="ustate"
 
 #
 # Interfaces
@@ -99,6 +104,7 @@ CONFIG_HASH_VERIFY=y
 # CONFIG_SIGNED_IMAGES is not set
 CONFIG_ENCRYPTED_IMAGES=y
 # CONFIG_ENCRYPTED_SW_DESCRIPTION is not set
+# CONFIG_ENCRYPTED_IMAGES_HARDEN_LOGGING is not set
 # CONFIG_PKCS11 is not set
 
 #
@@ -116,7 +122,6 @@ CONFIG_ZSTD=y
 #
 CONFIG_LIBCONFIG=y
 CONFIG_PARSERROOT=""
-CONFIG_JSON=y
 # CONFIG_LUAEXTERNAL is not set
 # CONFIG_SETSWDESCRIPTION is not set
 
@@ -130,12 +135,13 @@ CONFIG_JSON=y
 CONFIG_ARCHIVE=y
 CONFIG_LOCALE=y
 CONFIG_BOOTLOADERHANDLER=y
-CONFIG_COPY=y
+# CONFIG_COPY is not set
 # CONFIG_DELTA is not set
 # CONFIG_DISKPART is not set
 # CONFIG_DISKFORMAT_HANDLER is not set
 CONFIG_LUASCRIPTHANDLER=y
-# CONFIG_HANDLER_IN_LUA is not set
+# CONFIG_EMBEDDED_LUA_HANDLER is not set
+# CONFIG_EMMC_HANDLER is not set
 CONFIG_RAW=y
 # CONFIG_RDIFFHANDLER is not set
 # CONFIG_READBACKHANDLER is not set
@@ -144,3 +150,12 @@ CONFIG_SHELLSCRIPTHANDLER=y
 # CONFIG_SWUFORWARDER_HANDLER is not set
 # CONFIG_UCFWHANDLER is not set
 # CONFIG_UNIQUEUUID is not set
+
+#
+# Containers
+#
+
+#
+# Update containers
+#
+# CONFIG_DOCKER is not set

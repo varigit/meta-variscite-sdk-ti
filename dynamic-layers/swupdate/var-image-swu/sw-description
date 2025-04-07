@@ -1,0 +1,27 @@
+software =
+{
+	version = "0.1.0";
+
+	@@MACHINE@@ = {
+		hardware-compatibility: [ "1.0" ];
+
+		files: (
+			{
+				filename = "@@VAR_SWUPDATE_TARGET_IMAGE_FILE@@";
+				type = "archive";
+				compressed = "zstd";
+				device = "/dev/update";
+				filesystem = "ext4";
+				preserve-attributes = true;
+				path = "/";
+			}
+		);
+
+		scripts: (
+			{
+				filename = "update.sh";
+				type = "shellscript";
+			}
+		);
+	};
+}
