@@ -1,1 +1,1 @@
-DEMOS:remove:am62pxx = "ti-apps-launcher"
+DEMOS:remove = "ti-apps-launcher"
