@@ -58,8 +58,6 @@ RDEPENDS:${PN} += "\
 "
 
 # to add Cortex-M binaries in the image
-RDEPENDS:am62x-var-som:${PN} += "\
-    ti-mcu-plus-sdk \
-"
+RDEPENDS:${PN}:append:am62x-var-som = " ti-mcu-plus-sdk"
 
 TI_TEST_TI_TOOLS:remove:k3 = "ti-rtos-firmware"
