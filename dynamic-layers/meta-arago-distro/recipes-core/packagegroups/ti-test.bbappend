@@ -61,3 +61,6 @@ RDEPENDS:${PN} += "\
 RDEPENDS:${PN}:append:am62x-var-som = " ti-mcu-plus-sdk"
 
 TI_TEST_TI_TOOLS:remove:k3 = "ti-rtos-firmware"
+
+# piglit takes ~2GB of space
+TI_TEST_EXTRAS:remove = "piglit"

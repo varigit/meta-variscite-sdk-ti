@@ -37,6 +37,7 @@ IMAGE_INSTALL += "\
     packagegroup-arago-console \
     ltp-ddt \
     ti-test \
+    ti-test-extras \
     packagegroup-var-connectivity \
     packagegroup-arago-tisdk-crypto \
     packagegroup-arago-tisdk-multimedia \
