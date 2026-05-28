@@ -1,0 +1,29 @@
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Wed, 27 May 2026 14:30:00 +0200
+Subject: [PATCH] emptty: disable MOTD on Weston login screen
+
+Change the Arago emptty configuration so the login screen does not print the
+MOTD on the display.
+
+Upstream-Status: Inappropriate [Variscite board-specific]
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+
+---
+ emptty.conf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/emptty.conf b/emptty.conf
+index 2e2ed6d..2b6d0d1 100644
+--- a/emptty.conf
++++ b/emptty.conf
+@@ -8,7 +8,7 @@ SWITCH_TTY=true
+ PRINT_ISSUE=true
+ 
+ # Enables printing of default motd, /etc/emptty/motd or /etc/emptty/motd-gen.sh.
+-PRINT_MOTD=true
++PRINT_MOTD=false
+ 
+ # Preselected user, if AUTOLOGIN is enabled, this user is logged in.
+ DEFAULT_USER=weston
+-- 
+2.34.1
