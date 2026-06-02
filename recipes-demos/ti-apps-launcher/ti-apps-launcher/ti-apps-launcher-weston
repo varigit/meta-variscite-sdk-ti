@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Helper script to launch ti-apps-launcher as the user 'weston' by exporting
+# the required Wayland runtime environment before executing the application.
+# Intended to be used in weston.ini, where escaping or quoting is not supported.
+
+export XDG_RUNTIME_DIR=/run/user/1000
+export WAYLAND_DISPLAY=wayland-1
+
+exec /usr/bin/ti-apps-launcher "$@"

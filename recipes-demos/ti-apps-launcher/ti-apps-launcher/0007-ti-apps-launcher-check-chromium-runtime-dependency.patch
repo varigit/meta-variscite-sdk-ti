@@ -1,0 +1,239 @@
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Fri, 29 May 2026 11:15:43 +0200
+Subject: [PATCH] ti-apps-launcher: use chromium-weston and check runtime dependency
+
+Seva Store and Chromium Browser launch Chromium from the target
+filesystem. On images where Chromium is not installed, clicking those
+applications silently fails. On Variscite, launching Chromium through
+`su weston -c chromium ...` can miss the Wayland session environment
+needed by Chromium.
+
+Add an optional runtime dependency check to RunCmd and use it for the
+Seva Store and Chromium Browser launchers. If `which chromium` fails on
+the target, the application panel shows that the test depends on
+Chromium instead of trying to launch it.
+
+Also switch those launchers to `/usr/bin/chromium-weston` so they reuse
+the Chromium wrapper that sets the correct Wayland runtime environment.
+
+Upstream-Status: Inappropriate [Variscite image-specific]
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+
+---
+ apps/chromium_browser.qml  | 17 +++++++++++++----
+ apps/seva_store.qml        | 16 ++++++++++++----
+ backend/includes/run_cmd.h |  6 +++++-
+ backend/run_cmd.cpp        | 34 +++++++++++++++++++++++++++++++---
+ configs/platform.cpp       | 13 +++++++++++--
+ 5 files changed, 80 insertions(+), 9 deletions(-)
+
+diff --git a/backend/includes/run_cmd.h b/backend/includes/run_cmd.h
+index ea57808..39b04f1 100644
+--- a/backend/includes/run_cmd.h
++++ b/backend/includes/run_cmd.h
+@@ -8,16 +8,20 @@ class RunCmd : public QObject {
+ private:
+     QString _button;
+     QString _status_msg;
++    QString _dependency;
++    QString _missing_dependency_msg;
+ 
+     QString _command;
+     QStringList _args;
+     QProcess process;
++    bool dependencyAvailable();
++    void setMissingDependencyStatus();
+ 
+ public:
+     Q_PROPERTY(QString button MEMBER _button NOTIFY button_changed);
+     Q_PROPERTY(QString status_msg MEMBER _status_msg NOTIFY status_msg_changed);
+ 
+-    RunCmd(QString command, QStringList args);
++    RunCmd(QString command, QStringList args, QString dependency = QString(), QString missing_dependency_msg = QString());
+ 
+     Q_INVOKABLE void launch_or_stop();
+     Q_INVOKABLE void run(QString command = QString(), QStringList args = QStringList());
+diff --git a/backend/run_cmd.cpp b/backend/run_cmd.cpp
+index 101a50b..83d9561 100644
+--- a/backend/run_cmd.cpp
++++ b/backend/run_cmd.cpp
+@@ -5,6 +5,24 @@
+ 
+ extern Settings settings;
+ 
++bool RunCmd::dependencyAvailable() {
++    if (_dependency.isEmpty())
++        return true;
++
++    return QProcess::execute("which", QStringList({_dependency})) == 0;
++}
++
++void RunCmd::setMissingDependencyStatus() {
++    _button = "Unavailable";
++    if (_missing_dependency_msg.isEmpty())
++        _status_msg = "This test depends on " + _dependency + ".";
++    else
++        _status_msg = _missing_dependency_msg;
++
++    Q_EMIT button_changed();
++    Q_EMIT status_msg_changed();
++}
++
+ void RunCmd::onStateChanged(const QProcess::ProcessState &new_state) {
+     if( process.state() == QProcess::NotRunning ) {
+         qInfo() << "Exited " << _command << _args;
+@@ -21,18 +39,24 @@ void RunCmd::onStateChanged(const QProcess::ProcessState &new_state) {
+     Q_EMIT status_msg_changed();
+ }
+ 
+-RunCmd::RunCmd(QString command, QStringList args) {
++RunCmd::RunCmd(QString command, QStringList args, QString dependency, QString missing_dependency_msg) {
+     _command = command;
+     _args = args;
++    _dependency = dependency;
++    _missing_dependency_msg = missing_dependency_msg;
+     _status_msg = "Click 'Launch' to run.";
+     _button = "Launch";
+     QObject::connect(&process, &QProcess::stateChanged, this, &RunCmd::onStateChanged);
++    if (!dependencyAvailable())
++        setMissingDependencyStatus();
+ }
+ 
+ void RunCmd::launch_or_stop() {
+-    QByteArray output_bytes;
+-    QString output_string;
+     if( process.state() == QProcess::NotRunning ) {
++        if (!dependencyAvailable()) {
++            setMissingDependencyStatus();
++            return;
++        }
+         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+         env.insert("XDG_RUNTIME_DIR", "/run/user/1000");
+         env.insert("WAYLAND_DISPLAY", "wayland-1");
+@@ -61,6 +85,10 @@ void RunCmd::run(QString command, QStringList args) {
+     _args = args;
+ 
+     if( process.state() == QProcess::NotRunning ) {
++        if (!dependencyAvailable()) {
++            setMissingDependencyStatus();
++            return;
++        }
+         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+         env.insert("XDG_RUNTIME_DIR", "/run/user/1000");
+         env.insert("WAYLAND_DISPLAY", "wayland-1");
+diff --git a/configs/platform.cpp b/configs/platform.cpp
+index 5741087..93d539e 100644
+--- a/configs/platform.cpp
++++ b/configs/platform.cpp
+@@ -37,10 +37,19 @@ Benchmarks benchmarks;
+ Gpu_performance gpuperformance;
+ Wifi wifi;
+ 
+-RunCmd *seva_store = new RunCmd("/usr/bin/su", QStringList({"weston", "-c", "/usr/bin/chromium --no-first-run http://localhost:8007/#/"}));
++static const QString chromium_missing_msg =
++    QStringLiteral("This test depends on Chromium. Install chromium-ozone-wayland to run it.");
++
++RunCmd *seva_store = new RunCmd("/usr/bin/chromium-weston",
++    QStringList({"--no-first-run", "http://localhost:8007/#/"}),
++    QStringLiteral("chromium"),
++    chromium_missing_msg);
+ RunCmd *demo_3d = new RunCmd(QStringLiteral("/usr/bin/SGX/demos/Wayland/OpenGLESSkinning"), QStringList({}));
+ RunCmd *poweraction = new RunCmd(QStringLiteral(""), QStringList({}));
+-RunCmd *chromium_browser = new RunCmd("/usr/bin/su", QStringList({"weston", "-c", "chromium --no-first-run https://webglsamples.org/aquarium/aquarium.html"}));
++RunCmd *chromium_browser = new RunCmd("/usr/bin/chromium-weston",
++    QStringList({"--no-first-run", "https://webglsamples.org/aquarium/aquarium.html"}),
++    QStringLiteral("chromium"),
++    chromium_missing_msg);
+ 
+ QMap<enum devices, struct device_info> deviceMap = {
+     { AM62PXX_EVM, device_info_am62p },
+diff --git a/apps/chromium_browser.qml b/apps/chromium_browser.qml
+index 6af7b5a..0177041 100644
+--- a/apps/chromium_browser.qml
++++ b/apps/chromium_browser.qml
+@@ -10,31 +10,36 @@ Rectangle {
+     Text {
+         id: heading
+         text: "Chromium Browser"
+         anchors.horizontalCenter: parent.horizontalCenter
+-        anchors.verticalCenter: parent.verticalCenter
++        anchors.top: parent.top
++        anchors.topMargin: parent.height * 0.12
+         font.family: "Helvetica"
+         font.pixelSize: chromium.width * 0.03
+         font.bold: true
+         color: "#FEFEFE"
+     }
+     Text {
+         id: chromium_status_msg
+         text: chromium_browser.status_msg
+         anchors.horizontalCenter: parent.horizontalCenter
+         anchors.top: heading.bottom
+-        anchors.topMargin: parent.height * 0.01
++        anchors.topMargin: parent.height * 0.04
++        width: parent.width * 0.82
+         font.family: "Helvetica"
+-        font.pixelSize: chromium.width * 0.01
+-        color: "#DDDDDD"
++        font.pixelSize: chromium.width * 0.024
++        font.bold: text.indexOf("This test depends on Chromium") === 0
++        wrapMode: Text.WordWrap
++        horizontalAlignment: Text.AlignHCenter
++        color: text.indexOf("This test depends on Chromium") === 0 ? "#FF0000" : "#DDDDDD"
+     }
+     Button {
+         id: chromium_button
+         text: chromium_browser.button
+         anchors.top: chromium_status_msg.bottom
+         anchors.topMargin: parent.height * 0.02
+         anchors.horizontalCenter: parent.horizontalCenter
+         onClicked: chromium_browser.launch_or_stop()
+         font.pixelSize: chromium.width * 0.015
+         font.family: "Helvetica"
+     }
+ }
+diff --git a/apps/seva_store.qml b/apps/seva_store.qml
+index aa2c71f..6b8b9dd 100644
+--- a/apps/seva_store.qml
++++ b/apps/seva_store.qml
+@@ -8,31 +8,36 @@ Rectangle {
+     Text {
+         id: heading
+         text: "Seva Store"
+         anchors.horizontalCenter: parent.horizontalCenter
+-        anchors.verticalCenter: parent.verticalCenter
++        anchors.top: parent.top
++        anchors.topMargin: parent.height * 0.12
+         font.family: "Helvetica"
+         font.pixelSize: seva.width * 0.03
+         font.bold: true
+         color: "#FEFEFE"
+     }
+     Text {
+         id: seva_status_msg
+         text: seva_store.status_msg
+         anchors.horizontalCenter: parent.horizontalCenter
+         anchors.top: heading.bottom
+-        anchors.topMargin: parent.height * 0.01
++        anchors.topMargin: parent.height * 0.04
++        width: parent.width * 0.82
+         font.family: "Helvetica"
+-        font.pixelSize: seva.width * 0.01
+-        color: "#DDDDDD"
++        font.pixelSize: seva.width * 0.024
++        font.bold: text.indexOf("This test depends on Chromium") === 0
++        wrapMode: Text.WordWrap
++        horizontalAlignment: Text.AlignHCenter
++        color: text.indexOf("This test depends on Chromium") === 0 ? "#FF0000" : "#DDDDDD"
+     }
+     Button {
+         id: cmd_button
+         text: seva_store.button
+         anchors.top: seva_status_msg.bottom
+         anchors.topMargin: parent.height * 0.02
+         anchors.horizontalCenter: parent.horizontalCenter
+         onClicked: seva_store.launch_or_stop()
+         font.pixelSize: seva.width * 0.015
+         font.family: "Helvetica"
+     }
+ }

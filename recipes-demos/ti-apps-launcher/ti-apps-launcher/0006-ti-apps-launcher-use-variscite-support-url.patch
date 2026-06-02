@@ -1,0 +1,27 @@
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Thu, 28 May 2026 19:14:50 +0200
+Subject: [PATCH] ti-apps-launcher: use Variscite support URL
+
+Replace the TI E2E support URL shown in the device info panel with the
+Variscite website URL.
+
+Upstream-Status: Inappropriate [Variscite board-specific]
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+
+---
+ apps/deviceinfo.qml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/apps/deviceinfo.qml b/apps/deviceinfo.qml
+index ec17feb..c13aa15 100644
+--- a/apps/deviceinfo.qml
++++ b/apps/deviceinfo.qml
+@@ -38,7 +38,7 @@ Rectangle {
+             anchors.top: ipAddr.bottom
+             anchors.topMargin: parent.height * 0.05
+             font.pixelSize: parent.width * 0.08
+-            text: "<font color=\"#FEFFFF\"> Support: <br></font><font color=\"#FF0000\">https://e2e.ti.com/</font>"
++            text: "<font color=\"#FEFFFF\"> Support: <br></font><font color=\"#FF0000\">https://variscite.com</font>"
+         }
+     }
+ }

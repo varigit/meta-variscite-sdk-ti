@@ -1,0 +1,20 @@
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Thu, 28 May 2026 18:13:56 +0200
+Subject: [PATCH] ti-apps-launcher: move topbar power menu left
+
+Add a right margin to the topbar power menu so the buttons are shifted
+left and than the close button remains visible.
+
+Upstream-Status: Inappropriate [Variscite board-specific]
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+
+--- a/apps/topbar.qml
++++ b/apps/topbar.qml
+@@ -42,6 +42,7 @@
+         width: ((parent.height / 3) * (powermenu.button_getcount() + 1)) * 1.5
+         color: "transparent"
+         anchors.right: parent.right
++        anchors.rightMargin: parent.height * 1.0
+         anchors.top: parent.top
+         anchors.topMargin: height * 0.5
+ 

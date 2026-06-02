@@ -1,0 +1,98 @@
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Tue, 26 May 2026 14:00:00 +0200
+Subject: [PATCH] ti-apps-launcher: add am62x-var-som profile
+
+The Variscite board model does not match the TI AM625 SK profile,
+so ti-apps-launcher falls back to the generic profile and exposes only
+Industrial HMI and Benchmarks.
+
+Add a dedicated profile for VAR-SOM-AM62 and use the AM62x SK
+application set, but gate ARM Analytics behind AVDEC_H264_ENABLED
+because it requires avdec_h264 from gstreamer1.0-libav.
+
+Upstream-Status: Inappropriate [Variscite board-specific]
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+
+---
+ backend/includes/common.h |  1 +
+ configs/am62x-var-som.h  | 36 ++++++++++++++++++++++++++++++++++++
+ configs/platform.cpp     |  2 ++
+ 3 files changed, 39 insertions(+)
+ create mode 100644 configs/am62x-var-som.h
+
+diff --git a/backend/includes/common.h b/backend/includes/common.h
+index 8dd21d4..1b8dd7c 100644
+--- a/backend/includes/common.h
++++ b/backend/includes/common.h
+@@ -32,6 +32,7 @@ enum devices {
+     AM62PXX_EVM,
+     AM62XX_EVM,
+     AM62XX_LP_EVM,
++    AM62X_VAR_SOM,
+     AM62XXSIP_EVM,
+     AM67_SK,
+     AM68_SK,
+diff --git a/configs/am62x-var-som.h b/configs/am62x-var-som.h
+new file mode 100644
+index 0000000..d9f977e
+--- /dev/null
++++ b/configs/am62x-var-som.h
+@@ -0,0 +1,36 @@
++/* Configuration file for Variscite VAR-SOM-AM62 */
++
++#include "backend/includes/common.h"
++
++/*
++ * The pipeline mentioned in the app_arm_analytics demo requires the use of the H.264 codec.
++ * The usage of this codec for commercial purposes requires license fees which is why it is
++ * not activated on the default Variscite Recovery Image.
++ */
++// #define AVDEC_H264_ENABLED
++
++struct device_info device_info_am62x_var_som = {
++    .dtMatchString = "VAR-SOM-AM62",
++    .platform = "am62x-var-som",
++    .wallpaper = "/images/am6x_oob_demo_home_image.png",
++    .include_apps = {
++        app_industrial_control_sitara,
++        app_live_camera,
++#ifdef AVDEC_H264_ENABLED
++        app_arm_analytics,
++#endif
++        app_benchmarks,
++        app_gpu_performance,
++        app_seva_store,
++        app_chromium_browser,
++        app_3d_demo,
++        app_settings,
++    },
++    .include_powerbuttons = {
++        action_shutdown,
++        action_reboot,
++    #if RT_BUILD == 0
++        action_suspend,
++    #endif
++    },
++};
+diff --git a/configs/platform.cpp b/configs/platform.cpp
+index 312660b..5741087 100644
+--- a/configs/platform.cpp
++++ b/configs/platform.cpp
+@@ -19,6 +19,7 @@
+ #include "am62pxx-evm.h"
+ #include "am62xx-evm.h"
+ #include "am62xx-lp-evm.h"
++#include "am62x-var-som.h"
+ #include "am62xxsip-evm.h"
+ #include "am67-sk.h"
+ #include "am68-sk.h"
+@@ -45,6 +46,7 @@ QMap<enum devices, struct device_info> deviceMap = {
+     { AM62PXX_EVM, device_info_am62p },
+     { AM62XX_EVM, device_info_am62 },
+     { AM62XX_LP_EVM, device_info_am62_lp },
++    { AM62X_VAR_SOM, device_info_am62x_var_som },
+     { AM62XXSIP_EVM, device_info_am62sip },
+     { AM67_SK, device_info_am67 },
+     { AM68_SK, device_info_am68 },
+-- 
+2.34.1

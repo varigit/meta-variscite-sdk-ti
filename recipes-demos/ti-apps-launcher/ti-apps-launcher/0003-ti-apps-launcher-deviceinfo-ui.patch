@@ -1,0 +1,40 @@
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Thu, 28 May 2026 18:22:47 +0200
+Subject: [PATCH] ti-apps-launcher: improve device info text readability
+
+Increase the device info text size so platform, IP address, and support
+information are easier to read on the Variscite VAR-SOM-AM62 display layout.
+
+Upstream-Status: Inappropriate [Variscite board-specific]
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+
+--- a/apps/deviceinfo.qml
++++ b/apps/deviceinfo.qml
+@@ -15,7 +15,7 @@ Rectangle {
+             anchors.leftMargin: parent.width * 0.05
+             anchors.top: parent.top
+             anchors.topMargin: parent.height * 0.05
+-            font.pixelSize: parent.width * 0.06
++            font.pixelSize: parent.width * 0.08
+             text: "Platform: " + deviceinfo.getplatform()
+             color: "#FEFFFF"
+         }
+@@ -26,7 +26,7 @@ Rectangle {
+             anchors.leftMargin: parent.width * 0.05
+             anchors.top: platform.bottom
+             anchors.topMargin: parent.height * 0.05
+-            font.pixelSize: parent.width * 0.06
++            font.pixelSize: parent.width * 0.08
+             text: deviceinfo.ip_addr
+             color: "#FEFFFF"
+         }
+@@ -37,7 +37,7 @@ Rectangle {
+             anchors.leftMargin: parent.width * 0.05
+             anchors.top: ipAddr.bottom
+             anchors.topMargin: parent.height * 0.05
+-            font.pixelSize: parent.width * 0.06
++            font.pixelSize: parent.width * 0.08
+             text: "<font color=\"#FEFFFF\"> Support: <br></font><font color=\"#FF0000\">https://e2e.ti.com/</font>"
+         }
+     }
+}

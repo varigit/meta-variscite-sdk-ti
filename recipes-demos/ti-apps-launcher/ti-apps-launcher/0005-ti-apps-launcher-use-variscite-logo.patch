@@ -1,0 +1,45 @@
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Thu, 28 May 2026 18:55:13 +0200
+Subject: [PATCH] ti-apps-launcher: use Variscite logo in topbar
+
+Replace the Texas Instruments logo shown in the topbar with the
+Variscite logo.
+
+Add the logo to the Qt resource file so it is bundled into the
+ti-apps-launcher binary.
+
+Upstream-Status: Inappropriate [Variscite board-specific]
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+
+---
+ apps/topbar.qml      | 2 +-
+ ti-apps-launcher.qrc | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/apps/topbar.qml b/apps/topbar.qml
+index c893860..d7cc4a7 100644
+--- a/apps/topbar.qml
++++ b/apps/topbar.qml
+@@ -15,7 +15,7 @@ Rectangle {
+         width: height * 2.84 // To maintain the aspect ratio of the image
+         anchors.top: parent.top
+         anchors.topMargin: parent.height * 0.1
+-        source: "/images/Texas-Instruments.png"
++        source: "/images/Variscite_Logo_White.png"
+     }
+ 
+     Text {
+diff --git a/ti-apps-launcher.qrc b/ti-apps-launcher.qrc
+index 038fe40..f60545d 100644
+--- a/ti-apps-launcher.qrc
++++ b/ti-apps-launcher.qrc
+@@ -76,6 +76,7 @@
+         <file>images/tempalert.png</file>
+         <file>images/terminal.png</file>
+         <file>images/Texas-Instruments.png</file>
++        <file>images/Variscite_Logo_White.png</file>
+         <file>images/tickmark.svg</file>
+         <file>images/Top_Righ_Box.png</file>
+         <file>images/videostop.png</file>
+-- 
+2.34.1

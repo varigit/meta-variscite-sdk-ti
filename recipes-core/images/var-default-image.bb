@@ -64,4 +64,10 @@ systemd_disable_vt () {
     rm ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/getty.target.wants/getty@tty*.service
 }
 
+ROOTFS_POSTPROCESS_COMMAND:append = "install_ti_apps_launcher; "
+
+install_ti_apps_launcher() {
+    printf "\n[launcher]\nicon=/usr/share/weston/TI-logo-24x24.png\npath=/usr/bin/ti-apps-launcher-weston" >> ${IMAGE_ROOTFS}${sysconfdir}/xdg/weston/weston.ini
+}
+
 IMAGE_PREPROCESS_COMMAND:append = " ${@ 'systemd_disable_vt;' if bb.utils.contains('DISTRO_FEATURES', 'systemd', True, False, d) and bb.utils.contains('USE_VT', '0', True, False, d) else ''} "
