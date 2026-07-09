@@ -27,10 +27,12 @@ do_install[depends] += " \
 
 do_install () {
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/var-image-swupdate-${MACHINE}.rootfs.wic.zst ${S}/${PN}/yocto/var-image-swupdate-${MACHINE}.rootfs.wic.zst
+    install -Dm 0644 ${DEPLOY_DIR_IMAGE}/var-image-swupdate-${MACHINE}.rootfs.wic.bmap ${S}/${PN}/yocto/var-image-swupdate-${MACHINE}.rootfs.wic.bmap
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/var-image-swupdate-${MACHINE}.rootfs.spdx.json ${S}/${PN}/yocto/var-image-swupdate-${MACHINE}.rootfs.spdx.json
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/var-image-swupdate-${MACHINE}.rootfs.json ${S}/${PN}/yocto/var-image-swupdate-${MACHINE}.json
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/var-image-swu-${MACHINE}.rootfs.swu ${S}/${PN}/yocto/var-image-swu-${MACHINE}.rootfs.swu
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/${VAR_RECOVERY_SD_NAME}.wic.zst ${S}/${PN}/${VAR_RECOVERY_SD_NAME}.wic.zst
+    install -Dm 0644 ${DEPLOY_DIR_IMAGE}/${VAR_RECOVERY_SD_NAME}.wic.bmap ${S}/${PN}/${VAR_RECOVERY_SD_NAME}.wic.bmap
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/${VAR_RECOVERY_TARGET_ROOTFS}-${MACHINE}.rootfs.spdx.json ${S}/${PN}/yocto/${VAR_RECOVERY_TARGET_ROOTFS}-${MACHINE}.rootfs.spdx.json
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/${VAR_RECOVERY_TARGET_ROOTFS}-${MACHINE}.rootfs.json ${S}/${PN}/yocto/${VAR_RECOVERY_TARGET_ROOTFS}-${MACHINE}.rootfs.json
 
