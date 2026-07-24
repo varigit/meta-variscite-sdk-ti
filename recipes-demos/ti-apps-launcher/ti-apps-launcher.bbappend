@@ -12,6 +12,9 @@ SRC_URI:append = " \
     file://Variscite_Logo_White.png \
 "
 
+APPS_DEFINES:am62x-var-som = "SOC_AM62"
+APPS_DEFINES:am62px-var-som = "SOC_AM62P"
+
 do_configure:prepend() {
     install -d ${S}/images
     install -m 0644 ${WORKDIR}/Variscite_Logo_White.png ${S}/images/Variscite_Logo_White.png
