@@ -7,6 +7,8 @@ SRC_URI:append = " \
     file://0005-ti-apps-launcher-use-variscite-logo.patch \
     file://0006-ti-apps-launcher-use-variscite-support-url.patch \
     file://0007-ti-apps-launcher-check-chromium-runtime-dependency.patch \
+    file://0008-ti-apps-launcher-create-profile-for-VAR-SOM-AM62P.patch \
+    file://0009-arm_analytics-whitelist-AM62PX_VAR_SOM-to-use-HW-acc.patch \
     file://TI-logo-24x24.png \
     file://ti-apps-launcher-weston \
     file://Variscite_Logo_White.png \

@@ -1,0 +1,33 @@
+From bd1de416a7d409af7ff0fbeff8f44bc0b753f888 Mon Sep 17 00:00:00 2001
+From: Matthias Proske <matthias.p@variscite.com>
+Date: Tue, 28 Jul 2026 11:29:34 +0200
+Subject: [PATCH] arm_analytics: whitelist AM62PX_VAR_SOM to use HW accelerated
+ H.264 codec
+
+The TI Apps Launcher uses the default avdev_h264 gstreamer plugin. For
+their AM62PXX_EVM eval kit, they adjust the gstreamer pipeline on the
+fly, replacing it with the HW-accelerated v4l2h264dec plugin.
+
+Do the same for the AM62PX_VAR_SOM.
+
+Signed-off-by: Matthias Proske <matthias.p@variscite.com>
+---
+ backend/arm_analytics.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/backend/arm_analytics.cpp b/backend/arm_analytics.cpp
+index b59bf91..1c616d3 100644
+--- a/backend/arm_analytics.cpp
++++ b/backend/arm_analytics.cpp
+@@ -60,7 +60,7 @@ void ArmAnalytics::startVideo(QObject* object) {
+         return;
+     }
+ 
+-    if (detected_device == AM62PXX_EVM) {
++    if (detected_device == AM62PXX_EVM || detected_device == AM62PX_VAR_SOM) {
+         gst_pipeline.replace("avdec_h264", "v4l2h264dec capture-io-mode=4");
+         gst_pipeline.replace("loop=true", "loop=true caps=video/x-h264,width=1280,height=720,framerate=1/1");
+     }
+-- 
+2.55.0
+
