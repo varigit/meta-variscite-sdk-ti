@@ -26,7 +26,7 @@ detect_OS()
 	if grep -q 'PRETTY_NAME="Arago' /etc/os-release > /dev/null 2>&1; then
 		INSTALL_OS="Yocto"
 		IMGS_PATH="${IMGS_PATH:=/opt/images/Yocto}"
-	elif grep -q 'PRETTY_NAME="Debian' /etc/os-release > /dev/null 2>&1; then
+	elif grep -q 'NAME="Debian' /etc/os-release > /dev/null 2>&1; then
 		INSTALL_OS="Debian"
 		IMGS_PATH="${IMGS_PATH:=/opt/images/Debian}"
 	fi
