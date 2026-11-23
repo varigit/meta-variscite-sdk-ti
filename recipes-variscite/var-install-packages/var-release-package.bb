@@ -42,7 +42,8 @@ do_install () {
 }
 
 do_deploy () {
-    install -Dm 0644 "${B}/${PACKAGE_RELEASE_NAME}.tar.zst" "${DEPLOYDIR}/${PACKAGE_RELEASE_NAME}.tar.zst"
-    ln -sf "${PACKAGE_RELEASE_NAME}.tar.zst" "${DEPLOYDIR}/${PACKAGE_RELEASE_NAME}-${MACHINE}.tar.zst"
+    release_dir="${DEPLOYDIR}/release-packages"
+    install -Dm 0644 "${B}/${PACKAGE_RELEASE_NAME}.tar.zst" "${release_dir}/${PACKAGE_RELEASE_NAME}.tar.zst"
+    ln -sf "${PACKAGE_RELEASE_NAME}.tar.zst" "${release_dir}/${PACKAGE_RELEASE_NAME}-${MACHINE}.tar.zst"
 }
 addtask deploy after do_install before do_build
