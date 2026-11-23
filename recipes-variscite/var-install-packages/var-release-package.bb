@@ -3,6 +3,8 @@ DESCRIPTION = "Variscite recipe to package installer artifacts into a var-recove
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
+inherit deploy
+
 DEPENDS = "\
     tar-native \
     zstd-native \
@@ -36,9 +38,11 @@ do_install () {
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/${VAR_RECOVERY_TARGET_ROOTFS}-${MACHINE}.rootfs.spdx.json ${S}/${PN}/yocto/${VAR_RECOVERY_TARGET_ROOTFS}-${MACHINE}.rootfs.spdx.json
     install -Dm 0644 ${DEPLOY_DIR_IMAGE}/${VAR_RECOVERY_TARGET_ROOTFS}-${MACHINE}.rootfs.json ${S}/${PN}/yocto/${VAR_RECOVERY_TARGET_ROOTFS}-${MACHINE}.rootfs.json
 
-    tar -cf - ${PN} | zstd -19 -T0 -f -o ${PACKAGE_RELEASE_NAME}.tar.zst
-
-    install -Dm 0644 ${PACKAGE_RELEASE_NAME}.tar.zst ${DEPLOY_DIR_IMAGE}/${PACKAGE_RELEASE_NAME}.tar.zst
-    cd ${DEPLOY_DIR_IMAGE}
-    ln -sf ${PACKAGE_RELEASE_NAME}.tar.zst ${DEPLOY_DIR_IMAGE}/${PACKAGE_RELEASE_NAME}-${MACHINE}.tar.zst
+    tar -cf - ${PN} | zstd -19 -T0 -f -o "${B}/${PACKAGE_RELEASE_NAME}.tar.zst"
 }
+
+do_deploy () {
+    install -Dm 0644 "${B}/${PACKAGE_RELEASE_NAME}.tar.zst" "${DEPLOYDIR}/${PACKAGE_RELEASE_NAME}.tar.zst"
+    ln -sf "${PACKAGE_RELEASE_NAME}.tar.zst" "${DEPLOYDIR}/${PACKAGE_RELEASE_NAME}-${MACHINE}.tar.zst"
+}
+addtask deploy after do_install before do_build
